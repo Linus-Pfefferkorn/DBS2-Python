@@ -96,6 +96,29 @@ def getAuftrag(p_mitnr):
     :return ??
     :rtype  ??
     """
+    conn = getConn()
+    cursor = conn.cursor()
+    
+    try:
+        cursor.execute('SELECT MitID, MitName, MitVorname, MitJob, MitStundensatz from Mitarbeiter where MitID = ?', (p_mitnr))
+    except:
+        print('Abfrage ist fehlerhaft')
+        cursor.close()
+        return
 
-    # zu implementieren
-    print('Diese Funktion ist noch nicht implementiert')
+    # Leere Ergebnismenge abfangen
+    if cursor.rowcount == 0:
+        print('Kein Mitarbeiter in der Niederlassung beschäftigt')
+        cursor.close()
+        return 0
+
+    print('\nMitarbeiter:')
+    liste_mit = [0]
+    for row in cursor:
+        print(row.MitID, ' - ', row.MitName, ' - ', row.MitVorname, ' - ', row.MitJob, ' - ', row.MitStundensatz )
+        liste_mit.append(int(row[0]))
+
+    cursor.close()
+    conn.close()
+
+
