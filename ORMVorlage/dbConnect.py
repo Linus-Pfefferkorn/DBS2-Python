@@ -28,11 +28,11 @@ class SingletonEngine(object):
     # dbname = Datenbankname     - bitte eintragen
     connection_url = URL.create(
         "mssql+pyodbc",
-        username="user",
-        password="pw",
+        username="s84623",
+        password="s84623",
         host="141.56.2.45",
         port=1433,
-        database="dbname-Name",
+        database="iw21s84623",
         query={"driver": "ODBC Driver 17 for SQL Server"}
     )
     
