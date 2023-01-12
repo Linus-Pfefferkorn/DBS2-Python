@@ -107,4 +107,16 @@ class Auftrag(Base):
         self.KunNr = kunnr
         self.Auftragsdatum = aufdat
 
+class Ersatzteil(Base):
+    """ Definition der Klasse "Ersatzteile"
+    """ 
+    __tablename__ = 'Ersatzteil'
+    EtID           = Column('EtID', Integer, primary_key=True, autoincrement=False)
+    EtBezeichnung  = Column('EtBezeichnung', String(20))
+    EtPreis        = Column('EtPreis', Float)
+    EtAnzLager     = Column('EtAnzLager', Integer)  
+    EtHersteller   = Column('EtHersteller', String(20))
+
+
+
 
