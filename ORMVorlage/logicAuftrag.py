@@ -179,4 +179,68 @@ def planenAuftrag():
     else:
         print('Keine neuen Aufträge vorhanden\n')
     session.close()
+
+def AuftragAbschliessen():
+    """ Definition der Funktion AuftragAbschliessen
+    Bei der Abschluss wird dem Auftrag ein Abschlussdatum zugewiesen.
+    """
+    session = sessionLoader()
+    # ungeplante Aufträge der letzten 20 Tage abfragen und ausgeben
+    heute = datetime.datetime.now()
+    abdatum = heute - datetime.timedelta(days=20)
+    menge_auftrag = session.query(Auftrag) \
+        .filter( Auftrag.Erledigungsdatum > abdatum, Auftrag.Erledigungsdatum <= heute) \
+        .order_by(Auftrag.Erledigungsdatum).all()
+    if len(menge_auftrag) > 0:
+        liste_aufnr = [0]  # Liste der angezeigten Auftragsnummern initialisieren
+        for auf in menge_auftrag:
+            print(f' {auf.AufNr} - {auf.Auftragsdatum}; {auf.Kunde.Ort} - {auf.Erledigungsdatum}')
+            liste_aufnr.append(auf.AufNr)  # Auftragsnummer zur Liste hinzufügen
+        
+        # Auftragsnummer eingeben lassen - muss in der erstellten Liste sein
+        eingabe_aufnr = -1
+        while eingabe_aufnr not in liste_aufnr:
+            eingabe_aufnr = handleInputInteger('Auftragsnummer')
+        if eingabe_aufnr != 0:           
+            #Eingabe Erledigungsdatum
+            eingabe_dauert = handleInputDatum('Dauer')
+            print("")
+            
+            # Absichern, dass nur Mitarbeiternummern von Monteuren oder Meistern eingegeben werden können
+            menge_mitarbeiter = session.query(Mitarbeiter)\
+                .filter(or_(Mitarbeiter.Job == 'Monteur', Mitarbeiter.Job == 'Meister')).all()
+            liste_mit = []
+            for mit in menge_mitarbeiter:
+                print(f' {mit.MitId} - {mit.Name} {mit.Vorname}')
+                liste_mit.append(int(mit.MitId))
+            eingabe_mitid = -1
+            while eingabe_mitid not in liste_mit:
+                eingabe_mitid = handleInputInteger('Mitarbeiternummer')
+            # Ende Absicherung
+            
+            # Auftragsobjekt-Objekt aus der Datenbank laden
+            auftrag = session.query(Auftrag).get(eingabe_aufnr)
+            # Abbruch, wenn der Auftrag nicht existiert
+            if isinstance(auftrag, type(None)): 
+               print(f'Auftrag {eingabe_aufnr} existiert nicht in der Datenbank.')  
+               session.close()
+               return
+            try:
+                # Update des Datensatzes mit der eingegebenen Auftragsnummer
+                auftrag.Erledigungsdatum = eingabe_erldat
+                auftrag.MitId = eingabe_mitid
+                session.commit()
+                # Abruf und Ausgabe des gerade geänderten Auftrages
+                auftragUpdated = session.query(Auftrag).get(eingabe_aufnr)
+                print(f' {auftragUpdated.AufNr} - Mitarbeiter: {auftragUpdated.Mitarbeiter.Name}, \
+                Kunde: {auftragUpdated.Kunde.Name}, {auftragUpdated.Auftragsdatum}, {auftragUpdated.Erledigungsdatum}')
+            except exc.SQLAlchemyError():
+                print('Datenänderung nicht möglich.')
+        else:
+            print('Keine Auftragsnummer ausgewählt')
+            session.close()
+            return
+    else:
+        print('Keine neuen Aufträge vorhanden\n')
+    session.close()
     
