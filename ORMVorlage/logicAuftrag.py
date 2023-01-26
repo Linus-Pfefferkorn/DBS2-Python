@@ -1,5 +1,5 @@
 from dbConnect import sessionLoader
-from mapper import Mitarbeiter, Auftrag, Kunde
+from mapper import Mitarbeiter, Auftrag, Kunde, Montage
 from checker import handleInputInteger, handleInputDatum
 import datetime
 from sqlalchemy import exc, or_
@@ -206,6 +206,7 @@ def AuftragAbschliessen():
             print("")
             eingabe_anfahrt = handleInputInteger('Anfahrt')
             print("")
+
             
             # Auftragsobjekt-Objekt aus der Datenbank laden
             auftrag = session.query(Auftrag).get(eingabe_aufnr)
@@ -222,8 +223,25 @@ def AuftragAbschliessen():
                 # Abruf und Ausgabe des gerade geänderten Auftrages
                 auftragUpdated = session.query(Auftrag).get(eingabe_aufnr)
                 print(f' {auftragUpdated.AufNr} - Erledigung: {auftragUpdated.Erledigungsdatum}, {auftragUpdated.Dauer}, {auftragUpdated.Anfahrt}')
+                session.close()
             except exc.SQLAlchemyError():
                 print('Datenänderung nicht möglich.')
+                
+            i = -1
+            while i == -1:
+                eingabe_EtID = input('EtID: ')
+                print()
+                if eingabe_EtID == '0':
+                    i = 1
+                
+                else:
+                    eingabe_Anzahl = handleInputInteger('Anzahl: ')
+                    print()
+                    montageUpdated = Montage(EtID=eingabe_EtID, Anzahl=eingabe_Anzahl, AufNr=eingabe_aufnr)
+                    session.add(montageUpdated)
+                    session.commit()
+                
+
         else:
             print('Keine Auftragsnummer ausgewählt')
             session.close()
