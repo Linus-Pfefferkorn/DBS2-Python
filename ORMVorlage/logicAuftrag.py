@@ -226,7 +226,7 @@ def AuftragAbschliessen():
                 session.close()
             except exc.SQLAlchemyError():
                 print('Datenänderung nicht möglich.')
-                
+
             i = -1
             while i == -1:
                 eingabe_EtID = input('EtID: ')
@@ -240,7 +240,9 @@ def AuftragAbschliessen():
                     montageUpdated = Montage(EtID=eingabe_EtID, Anzahl=eingabe_Anzahl, AufNr=eingabe_aufnr)
                     session.add(montageUpdated)
                     session.commit()
-                
+            montageUpdated = session.query(Montage).filter(Montage.AufNr == eingabe_aufnr).all()
+            for mon in montageUpdated:
+                print(f' {mon.EtID} - {mon.Anzahl}')    
 
         else:
             print('Keine Auftragsnummer ausgewählt')
