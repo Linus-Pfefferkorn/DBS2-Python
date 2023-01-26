@@ -112,7 +112,7 @@ class Ersatzteil(Base):
     """ Definition der Klasse "Ersatzteile"
     """ 
     __tablename__ = 'Ersatzteil'
-    EtID           = Column('EtID', Integer, primary_key=True, autoincrement=False)
+    EtID           = Column('EtID', String[5], primary_key=True, autoincrement=False)
     EtBezeichnung  = Column('EtBezeichnung', String(20))
     EtPreis        = Column('EtPreis', Float)
     EtAnzLager     = Column('EtAnzLager', Integer)  
@@ -123,7 +123,7 @@ class Montage(Base):
     """ Definition der Klasse "Montage"
     """
     __tablename__ = 'Montage'
-    EtID        = Column('EtId', Integer, ForeignKey(Ersatzteil.EtID), primary_key=True, autoincrement=False)
+    EtID        = Column('EtId', String[5], ForeignKey(Ersatzteil.EtID), primary_key=True, autoincrement=False)
     AufNr       = Column('AufNr', Integer, ForeignKey(Auftrag.AufNr), primary_key=True, autoincrement=False)
     Anzahl      = Column('Anzahl', Float)
     Ersatzteil  = relationship('Ersatzteil', back_populates="ListeMontage")
