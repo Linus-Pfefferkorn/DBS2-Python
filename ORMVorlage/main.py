@@ -1,7 +1,7 @@
 from checker import handleInputInteger
 from logicNiederlassung import getNiederlassung
 from logicMitarbeiter import getMitarbeiter
-from logicAuftrag import getAuftrag, anlegenAuftrag, planenAuftrag
+from logicAuftrag import getAuftrag, anlegenAuftrag, planenAuftrag, AuftragAbschliessen 
 from logicErsatzteile import getErsatzteile
 from logicMontage import getErsatzteilFromAuftrag
 
@@ -12,6 +12,7 @@ while True:
     print('2 - Neuen Auftrag anlegen')
     print('3 - Auftrag planen')
     print('4 - Ersatzteile anzeigen')
+    print('5 - Auftrag abschliessen')
     wastun = handleInputInteger('Aktion wählen')
     print()
     
@@ -42,6 +43,9 @@ while True:
         print('Ersatzteile anzeigen')
         getErsatzteile()    
     
+    elif wastun == 5:
+        print('Auftrag abschliessen')
+        AuftragAbschliessen()
     else:
         break
 
